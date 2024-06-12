@@ -98,22 +98,6 @@ class TurboFan():
         self.a = sqrt(self.gammap*self.rp*self.Ts0)
         self.M9 = self.v9/self.a
 
-        # CALCULS DES RENDEMENTS
-        self.v0 = self.a * self.M0
-        self.Fp_spe = (1/(1+self.LAMBDA))*((1+self.alpha)*self.v9-self.v0)
-
-        # POUR LE FLUX SECONDAIRE
-        self.Fs_spe = (self.LAMBDA/(1+self.LAMBDA)) * \
-            ((1+self.alpha)*self.v9-self.v0)
-
-        # En total !
-        self.Ft_spe = self.Fs_spe + self.Fp_spe
-        self.debit_air = 21000/self.Ft_spe
-
-        # Calcul de la section d'entrée d'air
-        self.Rmoyeux = 0.3  # rapport moyeux rmin/rmax
-        self.Rmax = sqrt(
-            self.debit_air/(self.rho*self.v0*3.14*(1-(self.Rmoyeux**2))))
         ####################
         # FLux secondiare
         ####################
@@ -138,6 +122,24 @@ class TurboFan():
         # v = M * a avec a = racine de gamma r t, ok vérifié auprès de data d'Eliot
         self.v19 = self.M19 * sqrt(self.gamma*self.r*self.Tt19)
 
+        # CALCULS DES POUSSEES
+        self.v0 = self.a * self.M0
+        self.Fp_spe = (1/(1+self.LAMBDA))*((1+self.alpha)*self.v9-self.v0)
+
+        # POUR LE FLUX SECONDAIRE
+        self.Fs_spe = (self.LAMBDA/(1+self.LAMBDA)) * \
+            ((1+self.alpha)*self.v19-self.v0)
+
+        # En total !
+        self.Ft_spe = self.Fs_spe + self.Fp_spe
+        self.debit_air = 21000 / \
+            ((1+self.alpha)*(self.v9+self.LAMBDA*self.v19)-(self.LAMBDA+1)*self.v0)
+
+        # Calcul de la section d'entrée d'air
+        self.Rmoyeux = 0.3  # rapport moyeux rmin/rmax
+        self.Rmax = sqrt(
+            self.debit_air/(self.rho*self.v0*3.14*(1-(self.Rmoyeux**2))))
+
         # PUISSANCES ET RENDEMENTS
         # PK : W/(kg/S)
         # Ft_spe : N/(Kg/s)
@@ -146,9 +148,16 @@ class TurboFan():
             (((1+self.alpha)*(self.v9**2))-(self.v0**2))
         self.P_cycle_secondaire = 0.5 * \
             self.debit_air_secondaire*((self.v19**2)-(self.v0**2))
+
         self.P_cycle = self.P_cycle_primaire + self.P_cycle_secondaire
         self.P_chimique = self.debit_air*self.alpha*self.P_k
         self.ETA_thermique = self.P_cycle/self.P_chimique
+
         self.P_propulsive = self.F_objectif*self.v0
         self.ETA_propulsif = self.P_propulsive / self.P_cycle
         self.ETA_total = self.ETA_thermique * self.ETA_propulsif
+
+
+engine = TurboFan(40, 1600, 11)
+print(engine.ETA_thermique)
+print(engine.Ft_spe, engine.Fp_spe, engine.Fs_spe)
