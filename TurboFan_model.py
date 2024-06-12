@@ -10,7 +10,7 @@ from math import sqrt
 
 
 class TurboFan():
-    def __init__(self, OPR, Tt4, BPR=11) -> None:
+    def __init__(self, OPR, Tt4, BPR=11, PIf=1.4) -> None:
         # données croisière + constantes
         self.alt = 35e3 * 0.3048  # m
         self.r = 287              # J.kg-1.K-1
@@ -19,7 +19,7 @@ class TurboFan():
         self.gammap = 1.33
         self.P_k = 42800e3        # J.kg-1 pourvoir calorifique kero
         self.LAMBDA = BPR          # debit air / debit caburant
-        self.PI_f = 1.4           # taux de compresssion du fan
+        self.PI_f = PIf           # taux de compresssion du fan
         # données turbofan
         self.XI_e = 0.98  # pertes de charges entrée d'air
         self.ETA_c = 0.9  # rendement polytropique compresseur
