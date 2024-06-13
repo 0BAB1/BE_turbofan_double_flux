@@ -76,7 +76,8 @@ class TurboFan():
         # on determine les Cp & alpha
         self.Cpc = (self.gamma*self.r)/(self.gamma-1)
         self.Cpt = (self.gammap*self.rp)/(self.gammap-1)
-        self.alpha = (self.Tt4-self.Tt3)*self.Cpc/self.P_k
+        self.alpha = 0.02  # This fixes alpha (more realistic)
+        # self.Cpt = (self.gammap*self.rp)/(self.gammap-1) # This deduce alpha from Tt4
         self.Tt45 = self.Tt4 + (self.Cpc * (self.Tt3-self.Tt25)) / \
             (-self.ETA_m*(1+self.alpha)*self.Cpt)
         self.Pt45 = self.Pt4 * \
